@@ -2,8 +2,9 @@
 // http://localhost:3000/isolated/exercise/01.js
 
 import * as React from 'react'
-// 💣 remove this import
-import Globe from '../globe'
+
+const loadGlobe = () => import('../globe')
+const Globe = React.lazy(loadGlobe)
 
 // 🐨 use React.lazy to create a Globe component which uses a dynamic import
 // to get the Globe component from the '../globe' module.
@@ -26,7 +27,11 @@ function App() {
         padding: '2rem',
       }}
     >
-      <label style={{marginBottom: '1rem'}}>
+      <label
+        style={{marginBottom: '1rem'}}
+        onMouseOver={loadGlobe}
+        onFocus={loadGlobe}
+      >
         <input
           type="checkbox"
           checked={showGlobe}
@@ -35,7 +40,11 @@ function App() {
         {' show globe'}
       </label>
       <div style={{width: 400, height: 400}}>
-        {showGlobe ? <Globe /> : null}
+        {showGlobe ? (
+          <React.Suspense fallback={<div>loading...</div>}>
+            <Globe />
+          </React.Suspense>
+        ) : null}
       </div>
     </div>
   )
